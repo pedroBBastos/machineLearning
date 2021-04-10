@@ -1,0 +1,94 @@
+machine learning
+	-> dentro da inteligência artificial, fazer as máquinas aprenderem,
+	para que o desenvolvedor não precise passar todos o conhecimento para a máquina realizar a tarefa
+	e que a própria máquina, por treinamento/experiências, consiga aprender e desempenhar a tarefa
+	corretamente
+	
+inteligência artificial serve quando não temos solução algorítmica
+ou quando a solução algorítmica que temos não é computacionalmente viável
+
+diferentemente da programação tradicional (escrevo um programa com regras estabelecidas, input/outpu data),
+tenho um outro fluxo:
+	-> data extraction
+	-> data preparation
+	-> features selection -> extrair aquilo que me interessa
+		-> quando o sistema fizer a seleção de features automaticamente, dizemos que estamos trabalhando com
+		deep learning. Não precisamos fazer a seleção de features na mão.
+	-> training data + learning algorithm = learning system
+
+-> tipos de aprendizado
+	-> de acordo com entrada e saída
+		-> supervisionado -> será dada a entrada e saída para eu poder realizar meu treinamento
+		-> não-supervisionado -> só tenho os dados de entrada. Não sei qual deveria ser a saída. Para isso terei alguma métrica para dar alguma similaridade entre os dados
+		-> semi-supervisionado
+		-> aprendizado por reforço
+	-> de acordo com a relação dado/modelo (processo de aprendizagem)
+		-> aprendizado indutivo
+			-> o sistema adquire/refina conhecimento a partir dos dados
+			-> cada dado que entra no meu sistema faz o meu conhecimento ir se ajustando
+			-> a partir do meu conjunto de dados tento construir uma verdade que seja generalista
+			-> o problema eh que se o meu conjunto de dados for enviesado, não completo ou estiver errado serão
+			formuladas hipóteses incorretas
+		-> aprendizado dedutivo
+			-> tenta obter conhecimento usando lógica
+			-> usa premissas para obter uma conclusão
+			-> o conhecimento não é novo, ele já está presente no meu conhecimento inicial. Usando lógica
+			tento obter novo conhecimento.
+		-> aprendizado abdutivo
+	-> de acordo com a natureza do meu algorítmo
+		-> aprendizado evolucionário
+		-> deep learning
+		-> deep reinforcement learning
+
+-> em geral, temos o paradigma de aprendizado de máquina e a tarefa que irei realizar com este paradigma.
+E tbem associado a isso, quais são as métricas
+
+-------------------------------------------------------------------------------------
+
+A programmer is developing a computer system to identify which ingredients are expected to produce
+the most delicious food. 
+
+The programmer aims to create a database that will relate the set of 50 ingredients
+and the food's quality according to people. The algorithm automatically searches in all available videos of
+culinary recipes on youtube.
+
+If an ingredient is present in the receipt, a "1" is inserted in the database's corresponding place.
+Otherwise, a "0" will be placed to indicate that this ingredient was not used in a particular receipt.
+
+Also, assume that the algorithm considers the number of "likes" in each video
+as a parameter of the food quality. If the video has more "likes" than "dislikes", it assumes that this
+is a "good food", represented by "1". Otherwise, the system considers this a "bad food", represented by a "0".
+
+After searching over about 107 million videos and collecting data, the final database has 1.3 million receipts.
+Now he/she will run the learning algorithm over this data.
+
+--->>> indutivo pq os dados basearão a saída. Conhecimento não está já nos dados
+
+--->>> "Now he/she will run the learning algorithm over this data." => tamanho do conjunto de treinamento que será usado
+	=> 1.3 million receipts
+
+--->>> n° de classes do problema -> 2 (faz parte ou não faz parte do conjunto de ingredientes que produzem as
+										comidas mais deliciosas)
+
+--->>> nº de dimensões -> 50 (cada receita terá 50 0s e 1s => 50 dimensões )
+
+----------------------------------------------------------
+
+aprendizado não-supervisionado
+	
+	-> https://www.guru99.com/unsupervised-machine-learning.html#5
+
+	-> clustering task
+	
+	-> modelos não probabilísticos
+	
+		-> K-means
+			-> https://stackoverflow.com/questions/1401712/how-can-the-euclidean-distance-be-calculated-with-numpy
+	
+	
+	
+	
+	
+	
+	
+	

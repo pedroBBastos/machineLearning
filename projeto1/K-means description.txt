@@ -1,0 +1,70 @@
+dado um conjunto de dados
+
+Inicialização
+- definimos um numero de clusters k antes de executar o algoritmo
+  como o valor de cluster são escolhidos ?
+  - elbow (é função objetivo com valores plotados) , o cotovelo é o valor mais adequado
+  - silhouette method - range [-1,1]
+     calcula coesão e separação
+       - coesão: distancia media entre uma amostra e todos os outros pontos do proprio cluster (a)
+       - separação: distancia media entre uma amostra e todos os outros pontos do cluster mais proximo (b)
+
+         s = b - a / max(a,b)
+
+       - valores proximos de 1, clusterização densa
+       - valores proximos de -1, clsuterização incorreta
+       - valores muito proximos de 0, ocorre sobreposição de clusters
+
+
+- Definimos os valores centrais de cada cluster. Então se k = 3, temos 3 centros
+  como escolhemos esses centros ?
+
+Aprendizado
+- seja um dado aletorio do conjunto de trinamento/test, calculamos as distancias desse dado para os centros 
+  escolhidos. O dado ira pertencer ao cluster que estiver mais proximo (menor distancia do dado d a um dos centros ci)
+
+  repetir ate o centro do cluster parar de se mover
+
+    repetir para cada datapoint xi
+      calcular distancias de xi ate os centros
+      colocar xi no cluster na qual existe a menor distancia entre xi e ci
+
+    repetir para cada ccluster center ci
+      mover a posição do centro para a media dos dados xi's do cluster
+
+         uj = 1/ Nj Somatorio de i = 1 ate Nj de xi
+
+Uso
+    repetir para cada ponto de test
+      calcular distancias de xi ate os centros
+      colocar xi no cluster na qual existe a menor distancia entre xi e ci
+
+
+Para definir valor de k mais correto, usar função objetivo descrita como
+
+  J = somatorio de j = 1 ate k, somatorio i = 1 ate n || xi^(j) - cj || ^2
+
+  onde k = numero de clusters
+       n = numero de pontos
+       xi^(j) = caso i
+       cj = centroide para cluster j 
+       xi^(j) - cj = função distancia
+
+  melhor configuração para k é onde J é o menor possível
+
+  - Como inicializar:
+
+    - forgy inicialization : escolher pontos do conjunto de dados como clusters
+    - random partition: randomicamente escolhe para os pontos a quais clusters eles iram pertencer
+                        Em seguida, calcula a media para escolher pontos de clusters (não necessariamente dentro dos pontos dados) a 
+                        partir dos pontos randomicamente atribuidos
+                        o resultado da media sera o novo cluster
+
+    - kmeans ++: 
+      - escolha um ponto como cluster aleatoriamente
+      - calcule a menor distancia de cada ponto para o primeiro cluster
+      - faça para cada x, D(xi)^2 / somatorio D(X)^2    onde xi é da menor distancia de um ponto xi ao ci aleatorio
+                                                           e X é o somatorio de todas as menores distancias ate o ci aleatorio
+
+      - Escolher novo ponto para cluster com maiores valores de resultado do calculo anterior
+      - na proxima iteração, fazer o mesmo calculo, agora para c1 e c2, e assim sucessivamente
