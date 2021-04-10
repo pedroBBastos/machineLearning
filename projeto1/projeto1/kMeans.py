@@ -11,7 +11,7 @@ def kMeans(data):
     data = np.hstack((data, colunaCluster))
 
     # escolhendo randomicamente k posições no espaço para serem os centroides
-    centroides = np.random.randint(low=0, high=3700, size=(k, 2))
+    centroides = np.random.randint(low=0, high=1000, size=(k, 2)) / 1000
 
     iterations = 0
     while True:
@@ -37,6 +37,7 @@ def kMeans(data):
         if comparison.all():
             break
 
+        # com a normalização caiu bem a quantidade de interações
         iterations += 1
 
     print(iterations)
