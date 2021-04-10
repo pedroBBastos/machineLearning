@@ -86,9 +86,13 @@ aprendizado não-supervisionado
 			-> https://stackoverflow.com/questions/1401712/how-can-the-euclidean-distance-be-calculated-with-numpy
 	
 	
+------------------------------------------------------------
+
+feature scaling no sci-kit learning
+	-> https://scikit-learn.org/stable/modules/preprocessing.html
 	
 	
-	
-	
-	
-	
+	LA.norm(c, axis=1)
+
+
+https://stackoverflow.com/questions/36115843/filtering-numpy-matrix-on-a-column

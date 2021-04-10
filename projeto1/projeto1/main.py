@@ -1,8 +1,9 @@
 import numpy as np
+import kMeans as km
 
 
 def showDataInfo():
-    return np.genfromtxt('cluster.dat')
+    return km.kMeans(np.genfromtxt('cluster.dat'))
 
 
 if __name__ == '__main__':
