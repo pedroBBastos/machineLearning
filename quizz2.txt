@@ -1,0 +1,17 @@
+quizz 2
+
+Question 1: The graph below denotes the training and validation error curves of a
+supervised system. What do these curves indicate between step k-p and k? *
+	-> The curves indicate overfitting since the validation error is increasing while
+	the training error is decreasing.
+	
+Question 2: For k cross-validation, larger k value implies more bias. *
+
+Question 3: Feature scaling is an important step before applying K-Means algorithm.
+What is reason behind this? *
+	-> In distance calculation it will give the same weights for all features.
+
+Question 4: Suppose you are training a supervised machine learning system. The
+system at each iteration has a training and validation loss, as shown in the table below.
+Which iteration should the algorithm stop to avoid overfitting or underfitting? *
+	-> 5

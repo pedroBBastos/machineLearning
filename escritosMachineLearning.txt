@@ -91,8 +91,10 @@ aprendizado não-supervisionado
 feature scaling no sci-kit learning
 	-> https://scikit-learn.org/stable/modules/preprocessing.html
 	
-	
 	LA.norm(c, axis=1)
 
-
 https://stackoverflow.com/questions/36115843/filtering-numpy-matrix-on-a-column
+
+https://matplotlib.org/stable/tutorials/introductory/pyplot.html
+
+------------------------------------------------------------

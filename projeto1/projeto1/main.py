@@ -2,6 +2,34 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn import preprocessing
 import kMeans as km
+import dbscan as dbscan
+
+
+def executeDBSCAN():
+    data = np.genfromtxt('cluster.dat')
+    min_max_scaler = preprocessing.MinMaxScaler()
+    data = min_max_scaler.fit_transform(data)
+
+    clustered = dbscan.DBSCAN(data, 0.1, 10)
+    clusterNumbers = np.unique(clustered[:, 3])
+
+    cluster0 = clustered[clustered[:, 3] == clusterNumbers[0]]
+    cluster0 = cluster0[:, :2]
+    cluster0x = cluster0[:, 0]
+    cluster0y = cluster0[:, 1]
+
+    cluster1 = clustered[clustered[:, 3] == clusterNumbers[1]]
+    cluster1 = cluster1[:, :2]
+    cluster1x = cluster1[:, 0]
+    cluster1y = cluster1[:, 1]
+
+    cluster2 = clustered[clustered[:, 3] == clusterNumbers[2]]
+    cluster2 = cluster2[:, :2]
+    cluster2x = cluster2[:, 0]
+    cluster2y = cluster2[:, 1]
+
+    plt.plot(cluster0x, cluster0y, 'rx', cluster1x, cluster1y, 'gx', cluster2x, cluster2y, 'bx')
+    plt.show()
 
 
 def executeKMeans():
@@ -32,4 +60,5 @@ def executeKMeans():
 
 
 if __name__ == '__main__':
-    executeKMeans()
+    #executeKMeans()
+    executeDBSCAN()

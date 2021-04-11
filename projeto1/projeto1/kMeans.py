@@ -4,7 +4,6 @@ import numpy as np
 def kMeans(data):
     # escolhendo um valor para k (nº de cluster)
     k = 3
-    xMaxRange = 1000
 
     linhas = data.shape[0]
     colunaCluster = -1 * np.zeros((linhas, 1))
@@ -24,6 +23,7 @@ def kMeans(data):
             # indicando no ponto o indice do centroide ao qual ele pertence
             ponto[2] = nearestCentroideIndex
 
+        # recalculando as coordenadas dos centroides
         newCentroides = np.zeros((k, 2))
         for i in range(0, centroides.shape[0]):
             pontosClusterAtual = data[data[:, 2] == i]
@@ -32,6 +32,7 @@ def kMeans(data):
                 newCentroide = np.mean(pontosClusterAtual, axis=0)
                 newCentroides[i] = newCentroide
 
+        # verificando se os centroides pararam de se mover
         comparison = newCentroides == centroides
         centroides = newCentroides
         if comparison.all():
