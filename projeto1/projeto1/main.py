@@ -3,10 +3,10 @@ import matplotlib.pyplot as plt
 from sklearn import preprocessing
 import kMeans as km
 import dbscan as dbscan
+import split_train_test as stt
 
 
-def executeDBSCAN():
-    data = np.genfromtxt('cluster.dat')
+def executeDBSCAN(data):
     min_max_scaler = preprocessing.MinMaxScaler()
     data = min_max_scaler.fit_transform(data)
 
@@ -32,8 +32,7 @@ def executeDBSCAN():
     plt.show()
 
 
-def executeKMeans():
-    data = np.genfromtxt('cluster.dat')
+def executeKMeans(data):
     min_max_scaler = preprocessing.MinMaxScaler()
     data = min_max_scaler.fit_transform(data)
 
@@ -60,5 +59,9 @@ def executeKMeans():
 
 
 if __name__ == '__main__':
-    #executeKMeans()
-    executeDBSCAN()
+    data = np.genfromtxt('cluster.dat')
+    training_set, test_set = stt.split_train_test(data, 0.1)
+    executeKMeans(training_set)
+    # executeDBSCAN(training_set)
+    # executeKMeans(test_set)
+    # executeDBSCAN(test_set)
