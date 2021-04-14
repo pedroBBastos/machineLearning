@@ -4,6 +4,7 @@ from sklearn import preprocessing
 import kMeans as km
 import dbscan as dbscan
 import split_train_test as stt
+import elbow_graphic as em
 
 
 def executeDBSCAN(data):
@@ -36,8 +37,8 @@ def executeKMeans(data):
     min_max_scaler = preprocessing.MinMaxScaler()
     data = min_max_scaler.fit_transform(data)
 
-    clustered = km.kMeans(data)
-    print(clustered)
+    clustered, objective_values = km.kMeans(data)
+    em.elbow_graphic(objective_values)
 
     cluster0 = clustered[clustered[:, 2] == 0]
     cluster0 = cluster0[:, :2]
