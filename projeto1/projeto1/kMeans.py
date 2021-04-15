@@ -1,9 +1,7 @@
 import numpy as np
 
 
-def kMeans(data):
-    # escolhendo um valor para k (nº de cluster)
-    k = 3
+def kMeans(data, k):
 
     linhas = data.shape[0]
     colunaCluster = -1 * np.zeros((linhas, 1))
@@ -12,7 +10,9 @@ def kMeans(data):
     # escolhendo randomicamente k posições no espaço para serem os centroides
     centroides = np.random.randint(low=0, high=1000, size=(k, 2)) / 1000
 
-    iterations = 0
+    # valores das distancias minimas
+    newCentroides = np.zeros((k,2))
+
     while True:
 
         for ponto in data:
@@ -38,8 +38,4 @@ def kMeans(data):
         if comparison.all():
             break
 
-        # com a normalização caiu bem a quantidade de interações
-        iterations += 1
-
-    print(iterations)
-    return data
+    return data, newCentroides
