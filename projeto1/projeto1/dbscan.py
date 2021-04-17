@@ -15,22 +15,22 @@ def DBSCAN(data, matrixDeDistancia, eps, minPts):
 
     clusterNumber = 0
     for i in range(pontos):
-        walkThroughPontosDaDensidade(i, matrixDeDistancia, data, eps, minPts, clusterNumber)
+        walkThroughPontosDaDensidade(i, matrixDeDistancia, data, eps, minPts, clusterNumber, dimensoes)
         clusterNumber += 1
 
     return data
 
 
-def walkThroughPontosDaDensidade(i, matrixDeDistancia, data, eps, minPts, clusterNumber):
-    if data[i][2] == 0:
+def walkThroughPontosDaDensidade(i, matrixDeDistancia, data, eps, minPts, clusterNumber, dimensoes):
+    if data[i][dimensoes] == 0:
         # ponto i visitado
-        data[i][2] = 1
+        data[i][dimensoes] = 1
 
         # verificar se o ponto i possui minPts
         distanciasPontoAtual = matrixDeDistancia[i]
         pontosWithinEps = np.where(distanciasPontoAtual <= eps)[0]
         if pontosWithinEps.shape[0] >= minPts:
-            data[pontosWithinEps, 3] = clusterNumber  # pontos dentro de eps pertencem ao cluster atual
+            data[pontosWithinEps, dimensoes+1] = clusterNumber  # pontos dentro de eps pertencem ao cluster atual
 
             for p in pontosWithinEps:
-                walkThroughPontosDaDensidade(p, matrixDeDistancia, data, eps, minPts, clusterNumber)
+                walkThroughPontosDaDensidade(p, matrixDeDistancia, data, eps, minPts, clusterNumber, dimensoes)
