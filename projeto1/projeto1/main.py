@@ -1,4 +1,5 @@
 import numpy as np
+import scipy as scipy
 import matplotlib.pyplot as plt
 from sklearn import preprocessing
 import kMeans as km
@@ -11,8 +12,18 @@ def executeDBSCAN(data):
     min_max_scaler = preprocessing.MinMaxScaler()
     data = min_max_scaler.fit_transform(data)
 
-    clustered = dbscan.DBSCAN(data, 0.1, 10)
+    matrixDeDistancia = scipy.spatial.distance.squareform(scipy.spatial.distance.pdist(data))
+
+    clustered = dbscan.DBSCAN(data, matrixDeDistancia, 0.1, 3)
     clusterNumbers = np.unique(clustered[:, 3])
+
+    mediaDistanciasPorCluster = []
+    for ci in clusterNumbers:
+        indicesPontosCi = np.where(clustered[:, 3] == ci)[0]
+        matrixDeDistanciaCi = matrixDeDistancia[indicesPontosCi][:, indicesPontosCi]
+        mediaDistanciasPorCluster.append(np.mean(np.sum(matrixDeDistanciaCi, axis=1)))
+
+    mediaDistanciasPorCluster = np.array(mediaDistanciasPorCluster)
 
     cluster0 = clustered[clustered[:, 3] == clusterNumbers[0]]
     cluster0 = cluster0[:, :2]
@@ -90,7 +101,7 @@ def executeKMeans(data):
 if __name__ == '__main__':
     data = np.genfromtxt('cluster.dat')
     training_set, test_set = stt.split_train_test(data, 0.1)
-    executeKMeans(training_set)
-    # executeDBSCAN(training_set)
+    # executeKMeans(training_set)
+    executeDBSCAN(training_set)
     # executeKMeans(test_set)
     # executeDBSCAN(test_set)

@@ -1,4 +1,3 @@
-import scipy as scipy
 import numpy as np
 
 
@@ -6,9 +5,8 @@ import numpy as np
 # at least one Core point at a distance n. Noise — This is a point that is neither a Core nor a Border. And it has
 # less than m points within distance n from itself.
 
-def DBSCAN(data, eps, minPts):
+def DBSCAN(data, matrixDeDistancia, eps, minPts):
     pontos, dimensoes = data.shape
-    matrixDeDistancia = scipy.spatial.distance.squareform(scipy.spatial.distance.pdist(data))
     visitados = np.zeros((pontos, 1))  # 0 ou 1
     cluster = -1 * np.ones((pontos, 1))  # -1 (no cluster)
 
