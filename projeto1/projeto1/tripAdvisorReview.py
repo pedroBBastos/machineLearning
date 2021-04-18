@@ -54,16 +54,25 @@ def executeDBSCAN(data):
 
 
 if __name__ == '__main__':
-    data = np.genfromtxt('tripadvisor_review.csv', delimiter=',', skip_header=1)
-    data = data[:, 1:]
-    print(data.shape)
-    # print(data)
+    try:
+        # data = np.genfromtxt('Sales_Transactions_Dataset_Weekly.csv', delimiter=',', skip_header=1)
+        # data = np.genfromtxt('gas_emission/gt_2011.csv', delimiter=',', skip_header=1)
+        # data = np.genfromtxt('google_review_ratings.csv', delimiter=',', skip_header=1)
+        data = np.genfromtxt('tripadvisor_review.csv', delimiter=',', skip_header=1)
+        # data = data[:, 1:data.shape[1]-1]
+        data = data[:, 1:]
+        data = np.nan_to_num(data)
+        # data = data[:800]
+        print(data.shape)
+        # print(data)
 
-    pca = PCA(n_components=2)
-    # pca = PCA(n_components=3)
-    dataDimensaoReduzida = pca.fit_transform(data)
-    print(dataDimensaoReduzida)
-    print(dataDimensaoReduzida.shape)
+        pca = PCA(n_components=2)
+        # pca = PCA(n_components=3)
+        dataDimensaoReduzida = pca.fit_transform(data)
+        print(dataDimensaoReduzida)
+        print(dataDimensaoReduzida.shape)
 
-    executeDBSCAN(dataDimensaoReduzida)
-    # executeDBSCAN3D(dataDimensaoReduzida)
+        executeDBSCAN(dataDimensaoReduzida)
+        # executeDBSCAN3D(dataDimensaoReduzida)
+    except BaseException as e:
+        print(e)

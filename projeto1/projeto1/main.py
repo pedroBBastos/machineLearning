@@ -1,7 +1,10 @@
 import numpy as np
 import scipy as scipy
 import matplotlib.pyplot as plt
+
 from sklearn import preprocessing
+import sklearn.metrics as sklMetrics
+
 import kMeans as km
 import dbscan as dbscan
 import split_train_test as stt
@@ -15,41 +18,27 @@ def executeDBSCAN(data):
 
     matrixDeDistancia = scipy.spatial.distance.squareform(scipy.spatial.distance.pdist(data))
 
-    eps_values = [.1,.2,.3,.4,.5]
+    # knee gráfico
+    thirdMinDists = np.sort(np.partition(matrixDeDistancia, 4)[:, 4])
+    em.plot_elbow_graphic(thirdMinDists, range(0, len(thirdMinDists)), 2)
+
+
+    eps_values = [.058]
+    #eps_values = np.linspace(0.0, 0.5)
     elbow_values = []
     for eps in eps_values:
         clustered = dbscan.DBSCAN(data, matrixDeDistancia, eps, 3)
         clusterNumbers = np.unique(clustered[:, 3])
 
-        mediaDistanciasPorCluster = []
+        silhouette_score = sklMetrics.silhouette_score(data, clustered[:, 3])
+
         for ci in clusterNumbers:
-            indicesPontosCi = np.where(clustered[:, 3] == ci)[0]
-            matrixDeDistanciaCi = matrixDeDistancia[indicesPontosCi][:, indicesPontosCi]
-            mediaDistanciasPorCluster.append(np.mean(np.sum(matrixDeDistanciaCi, axis=1)))
-
-        mediaDistanciasPorCluster = np.array(mediaDistanciasPorCluster)
-        elbow_values.append(sum(mediaDistanciasPorCluster))
-
-        # cluster0 = clustered[clustered[:, 3] == clusterNumbers[0]]
-        # cluster0 = cluster0[:, :2]
-        # cluster0x = cluster0[:, 0]
-        # cluster0y = cluster0[:, 1]
-        #
-        # cluster1 = clustered[clustered[:, 3] == clusterNumbers[1]]
-        # cluster1 = cluster1[:, :2]
-        # cluster1x = cluster1[:, 0]
-        # cluster1y = cluster1[:, 1]
-        #
-        # cluster2 = clustered[clustered[:, 3] == clusterNumbers[2]]
-        # cluster2 = cluster2[:, :2]
-        # cluster2x = cluster2[:, 0]
-        # cluster2y = cluster2[:, 1]
-        #
-        # plt.plot(cluster0x, cluster0y, 'rx', cluster1x, cluster1y, 'gx', cluster2x, cluster2y, 'bx')
-        # plt.show()
-
-    em.plot_elbow_graphic(eps_values, elbow_values, 2)
-
+            ci = clustered[clustered[:, 3] == ci]
+            ci = ci[:, :2]
+            cix = ci[:, 0]
+            ciy = ci[:, 1]
+            plt.plot(cix, ciy, color=np.random.random(3), marker='x', linestyle='')
+        plt.show()
 
 
 def executeKMeans(data):
@@ -107,6 +96,9 @@ def executeKMeans(data):
 
 
 if __name__ == '__main__':
+
+    # sys.setrecursionlimit(5500)
+
     data = np.genfromtxt('cluster.dat')
     training_set, test_set = stt.split_train_test(data, 0.1)
     # executeKMeans(training_set)
