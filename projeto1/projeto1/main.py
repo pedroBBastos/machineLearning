@@ -6,6 +6,7 @@ import kMeans as km
 import dbscan as dbscan
 import split_train_test as stt
 import elbow as em
+import scipy.spatial
 
 
 def executeDBSCAN(data):
@@ -14,34 +15,41 @@ def executeDBSCAN(data):
 
     matrixDeDistancia = scipy.spatial.distance.squareform(scipy.spatial.distance.pdist(data))
 
-    clustered = dbscan.DBSCAN(data, matrixDeDistancia, 0.1, 3)
-    clusterNumbers = np.unique(clustered[:, 3])
+    eps_values = [.1,.2,.3,.4,.5]
+    elbow_values = []
+    for eps in eps_values:
+        clustered = dbscan.DBSCAN(data, matrixDeDistancia, eps, 3)
+        clusterNumbers = np.unique(clustered[:, 3])
 
-    mediaDistanciasPorCluster = []
-    for ci in clusterNumbers:
-        indicesPontosCi = np.where(clustered[:, 3] == ci)[0]
-        matrixDeDistanciaCi = matrixDeDistancia[indicesPontosCi][:, indicesPontosCi]
-        mediaDistanciasPorCluster.append(np.mean(np.sum(matrixDeDistanciaCi, axis=1)))
+        mediaDistanciasPorCluster = []
+        for ci in clusterNumbers:
+            indicesPontosCi = np.where(clustered[:, 3] == ci)[0]
+            matrixDeDistanciaCi = matrixDeDistancia[indicesPontosCi][:, indicesPontosCi]
+            mediaDistanciasPorCluster.append(np.mean(np.sum(matrixDeDistanciaCi, axis=1)))
 
-    mediaDistanciasPorCluster = np.array(mediaDistanciasPorCluster)
+        mediaDistanciasPorCluster = np.array(mediaDistanciasPorCluster)
+        elbow_values.append(sum(mediaDistanciasPorCluster))
 
-    cluster0 = clustered[clustered[:, 3] == clusterNumbers[0]]
-    cluster0 = cluster0[:, :2]
-    cluster0x = cluster0[:, 0]
-    cluster0y = cluster0[:, 1]
+        # cluster0 = clustered[clustered[:, 3] == clusterNumbers[0]]
+        # cluster0 = cluster0[:, :2]
+        # cluster0x = cluster0[:, 0]
+        # cluster0y = cluster0[:, 1]
+        #
+        # cluster1 = clustered[clustered[:, 3] == clusterNumbers[1]]
+        # cluster1 = cluster1[:, :2]
+        # cluster1x = cluster1[:, 0]
+        # cluster1y = cluster1[:, 1]
+        #
+        # cluster2 = clustered[clustered[:, 3] == clusterNumbers[2]]
+        # cluster2 = cluster2[:, :2]
+        # cluster2x = cluster2[:, 0]
+        # cluster2y = cluster2[:, 1]
+        #
+        # plt.plot(cluster0x, cluster0y, 'rx', cluster1x, cluster1y, 'gx', cluster2x, cluster2y, 'bx')
+        # plt.show()
 
-    cluster1 = clustered[clustered[:, 3] == clusterNumbers[1]]
-    cluster1 = cluster1[:, :2]
-    cluster1x = cluster1[:, 0]
-    cluster1y = cluster1[:, 1]
+    em.plot_elbow_graphic(eps_values, elbow_values, 2)
 
-    cluster2 = clustered[clustered[:, 3] == clusterNumbers[2]]
-    cluster2 = cluster2[:, :2]
-    cluster2x = cluster2[:, 0]
-    cluster2y = cluster2[:, 1]
-
-    plt.plot(cluster0x, cluster0y, 'rx', cluster1x, cluster1y, 'gx', cluster2x, cluster2y, 'bx')
-    plt.show()
 
 
 def executeKMeans(data):
@@ -95,7 +103,7 @@ def executeKMeans(data):
                  cluster6x, cluster6y, 'kx')
         plt.show()
 
-    em.plot_elbow_graphic(elbow_values_plot, k_clusters)
+    em.plot_elbow_graphic(elbow_values_plot, k_clusters, 1)
 
 
 if __name__ == '__main__':
