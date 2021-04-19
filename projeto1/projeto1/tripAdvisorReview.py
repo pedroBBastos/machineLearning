@@ -28,5 +28,5 @@ if __name__ == '__main__':
     dataDimensaoReduzidaTeste = pca.fit_transform(test_set)
 
     # km.executeKMeans(dataDimensaoReduzidaTreino, dataDimensaoReduzidaTeste)
-    dbscan.executeDBSCAN(dataDimensaoReduzidaTreino, dataDimensaoReduzidaTeste, [0.13], 11)
+    dbscan.executeDBSCAN(dataDimensaoReduzidaTreino, dataDimensaoReduzidaTeste, np.arange(0.012, 0.5, 0.012), 11)
     # executeDBSCAN3D(dataDimensaoReduzida)

@@ -38,17 +38,21 @@ def executeDBSCAN(dataTraining, dataTest, eps_values, minPts):
         if np.unique(clustered[:, 3]).shape[0] != 1:
             silhouette_score = sklMetrics.silhouette_score(dataTraining, clustered[:, 3])
 
-        for ci in clusterNumbers:
-            ci = clustered[clustered[:, 3] == ci]
-            ci = ci[:, :2]
-            cix = ci[:, 0]
-            ciy = ci[:, 1]
-            plt.plot(cix, ciy, color=np.random.random(3), marker='x', linestyle='')
-        plt.show()
+        # for ci in clusterNumbers:
+        #     ci = clustered[clustered[:, 3] == ci]
+        #     ci = ci[:, :2]
+        #     cix = ci[:, 0]
+        #     ciy = ci[:, 1]
+        #     plt.plot(cix, ciy, color=np.random.random(3), marker='x', linestyle='')
+        # plt.show()
 
     ###########################################################
-    # Test
+    # Test -> melhor EPS = 0.0864
     ###########################################################
+
+    # clusteredPorEps = []
+    # corePointsPorEps = []
+    # clusterNumbersPorEps = []
 
     dataTest = min_max_scaler.fit_transform(dataTest)
     pontosTeste, _ = dataTest.shape
@@ -60,11 +64,11 @@ def executeDBSCAN(dataTraining, dataTest, eps_values, minPts):
 
     newMatrix = np.concatenate((chosenClustered[:, :2], dataTest[:, :2]))
     novaMatrixDeDistancia = scipy.spatial.distance.squareform(scipy.spatial.distance.pdist(newMatrix))
-    novaMatrixDeDistancia = novaMatrixDeDistancia[516:, :516]
+    novaMatrixDeDistancia = novaMatrixDeDistancia[pontosTreino:, :pontosTreino]
     print(novaMatrixDeDistancia)
 
     indicesPontosMaisProximos = np.argmin(novaMatrixDeDistancia, axis=1)
-    mask = np.zeros((pontosTeste, pontosTreino), dtype=bool) # TODO trocar para usar os shapes
+    mask = np.zeros((pontosTeste, pontosTreino), dtype=bool)
     mask[np.arange(len(mask)), indicesPontosMaisProximos] = True
     menoresDistancias = novaMatrixDeDistancia[mask]
 
@@ -72,7 +76,7 @@ def executeDBSCAN(dataTraining, dataTest, eps_values, minPts):
     toAssignCluster = np.where(menoresDistancias <= eps_values[0])[0]
     dataTest[toAssignCluster, 2] = chosenClustered[indicesPontosMaisProximos[toAssignCluster], 2]
 
-    clusterNumbersTeste = clusterNumbersPorEps[0]
+    clusterNumbersTeste = clusterNumbersPorEps[6]
     for ci in clusterNumbersTeste:
         cor = np.random.random(3)
 
