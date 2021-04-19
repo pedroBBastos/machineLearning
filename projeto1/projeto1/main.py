@@ -58,25 +58,38 @@ def executeDBSCAN(dataTraining, dataTest):
     initCluster = -1 * np.ones((pontos, 1))  # -1 (no cluster)
     dataTest = np.hstack((dataTest, initCluster))
 
-    newMatrix = np.concatenate((chosenClustered, dataTest))
+    newMatrix = np.concatenate((chosenClustered[:, :2], dataTest[:, :2]))
     novaMatrixDeDistancia = scipy.spatial.distance.squareform(scipy.spatial.distance.pdist(newMatrix))
     novaMatrixDeDistancia = novaMatrixDeDistancia[516:, :516]
     print(novaMatrixDeDistancia)
 
     indicesPontosMaisProximos = np.argmin(novaMatrixDeDistancia, axis=1)
-    # TODO Verificar se linha abaixo está correta para pegar as menores
-    #  distancias de cada ponto novo
-    menoresDistancias = novaMatrixDeDistancia[:, indicesPontosMaisProximos][:, 0]
+    mask = np.zeros((57, 516), dtype=bool)
+    mask[np.arange(len(mask)), indicesPontosMaisProximos] = True
+    menoresDistancias = novaMatrixDeDistancia[mask]
 
-    corePointsPorEps = corePointsPorEps[0]
-    for i in range(0, len(menoresDistancias)):
-        if menoresDistancias[i] <= eps_values[0]:
-            index = 0
-            while True:
-                if corePointsPorEps[index][0] == indicesPontosMaisProximos[i]:
-                    dataTest[i, 2] = corePointsPorEps[index][1]
-                    break
+    # atribuindo número de cluster aos novos pontos
+    toAssignCluster = np.where(menoresDistancias <= eps_values[0])[0]
+    dataTest[toAssignCluster, 2] = chosenClustered[indicesPontosMaisProximos[toAssignCluster], 2]
+
     print(dataTest)
+
+    clusterNumbersTeste = clusterNumbersPorEps[0]
+    for ci in clusterNumbersTeste:
+        cor = np.random.random(3)
+
+        pontosCi = chosenClustered[chosenClustered[:, 2] == ci]
+        pontosCi = pontosCi[:, :2]
+        pontosCix = pontosCi[:, 0]
+        pontosCiy = pontosCi[:, 1]
+        plt.plot(pontosCix, pontosCiy, color=cor, marker='x', linestyle='')
+
+        ciTeste = dataTest[dataTest[:, 2] == ci]
+        ciTeste = ciTeste[:, :2]
+        ciTestex = ciTeste[:, 0]
+        ciTestey = ciTeste[:, 1]
+        plt.plot(ciTestex, ciTestey, color=cor, marker='s', linestyle='')
+    plt.show()
 
 
 
