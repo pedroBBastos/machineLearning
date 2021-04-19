@@ -12,25 +12,31 @@ import elbow as em
 import scipy.spatial
 
 
-def executeDBSCAN(data):
+def executeDBSCAN(dataTraining, dataTest):
     min_max_scaler = preprocessing.MinMaxScaler()
-    data = min_max_scaler.fit_transform(data)
+    dataTraining = min_max_scaler.fit_transform(dataTraining)
 
-    matrixDeDistancia = scipy.spatial.distance.squareform(scipy.spatial.distance.pdist(data))
+    matrixDeDistancia = scipy.spatial.distance.squareform(scipy.spatial.distance.pdist(dataTraining))
 
     # knee gráfico
     thirdMinDists = np.sort(np.partition(matrixDeDistancia, 4)[:, 4])
     em.plot_elbow_graphic(thirdMinDists, range(0, len(thirdMinDists)), 2)
 
+    clusteredPorEps = []
+    corePointsPorEps = []
+    clusterNumbersPorEps = []
 
-    eps_values = [.058]
-    #eps_values = np.linspace(0.0, 0.5)
-    elbow_values = []
+    eps_values = [.058] # eps_values = np.linspace(0.0, 0.5)
     for eps in eps_values:
-        clustered = dbscan.DBSCAN(data, matrixDeDistancia, eps, 3)
+        clustered, corePointsList = dbscan.DBSCAN(dataTraining, matrixDeDistancia, eps, 3)
         clusterNumbers = np.unique(clustered[:, 3])
 
-        silhouette_score = sklMetrics.silhouette_score(data, clustered[:, 3])
+        clusteredPorEps.append(clustered)
+        corePointsPorEps.append(corePointsList)
+        clusterNumbersPorEps.append(clusterNumbers)
+
+        # silhouette_score como métrica para avaliar
+        silhouette_score = sklMetrics.silhouette_score(dataTraining, clustered[:, 3])
 
         for ci in clusterNumbers:
             ci = clustered[clustered[:, 3] == ci]
@@ -40,68 +46,117 @@ def executeDBSCAN(data):
             plt.plot(cix, ciy, color=np.random.random(3), marker='x', linestyle='')
         plt.show()
 
+    ###########################################################
+    # Test
+    ###########################################################
 
-def executeKMeans(data):
+    dataTest = min_max_scaler.fit_transform(dataTest)
+    pontos, dimensoes = dataTest.shape
+
+    chosenClustered = clusteredPorEps[0]
+    chosenClustered = np.delete(chosenClustered, 2, 1)
+    initCluster = -1 * np.ones((pontos, 1))  # -1 (no cluster)
+    dataTest = np.hstack((dataTest, initCluster))
+
+    newMatrix = np.concatenate((chosenClustered, dataTest))
+    novaMatrixDeDistancia = scipy.spatial.distance.squareform(scipy.spatial.distance.pdist(newMatrix))
+    novaMatrixDeDistancia = novaMatrixDeDistancia[516:, :516]
+    print(novaMatrixDeDistancia)
+
+    indicesPontosMaisProximos = np.argmin(novaMatrixDeDistancia, axis=1)
+    # TODO Verificar se linha abaixo está correta para pegar as menores
+    #  distancias de cada ponto novo
+    menoresDistancias = novaMatrixDeDistancia[:, indicesPontosMaisProximos][:, 0]
+
+    corePointsPorEps = corePointsPorEps[0]
+    for i in range(0, len(menoresDistancias)):
+        if menoresDistancias[i] <= eps_values[0]:
+            index = 0
+            while True:
+                if corePointsPorEps[index][0] == indicesPontosMaisProximos[i]:
+                    dataTest[i, 2] = corePointsPorEps[index][1]
+                    break
+    print(dataTest)
+
+
+
+def executeKMeans(dataTraining, dataTest):
     min_max_scaler = preprocessing.MinMaxScaler()
-    data = min_max_scaler.fit_transform(data)
+    data = min_max_scaler.fit_transform(dataTraining)
 
+    centroidesPorK = []
+    clusteredPorK = []
+    clusteredNumbersPorK = []
     k_clusters = [1, 2, 3, 4, 5, 6, 7]
     elbow_values_plot = []
+
     for k in k_clusters:
         clustered, centroides = km.kMeans(data, k)
+        clusterNumbers = np.unique(clustered[:, 2])
+
+        centroidesPorK.append(centroides)
+        clusteredPorK.append(clustered)
+        clusteredNumbersPorK.append(clusterNumbers)
+
+        for ci in clusterNumbers:
+            ci = clustered[clustered[:, 2] == ci]
+            ci = ci[:, :2]
+            cix = ci[:, 0]
+            ciy = ci[:, 1]
+            plt.plot(cix, ciy, color=np.random.random(3), marker='x', linestyle='')
+        plt.show()
+
         value = em.elbow_value(clustered, centroides)
         elbow_values_plot.append(value)
 
-        cluster0 = clustered[clustered[:, 2] == 0]
-        cluster0 = cluster0[:, :2]
-        cluster0x = cluster0[:, 0]
-        cluster0y = cluster0[:, 1]
-
-        cluster1 = clustered[clustered[:, 2] == 1]
-        cluster1 = cluster1[:, :2]
-        cluster1x = cluster1[:, 0]
-        cluster1y = cluster1[:, 1]
-
-        cluster2 = clustered[clustered[:, 2] == 2]
-        cluster2 = cluster2[:, :2]
-        cluster2x = cluster2[:, 0]
-        cluster2y = cluster2[:, 1]
-
-        cluster3 = clustered[clustered[:, 2] == 3]
-        cluster3 = cluster3[:, :2]
-        cluster3x = cluster3[:, 0]
-        cluster3y = cluster3[:, 1]
-
-        cluster4 = clustered[clustered[:, 2] == 4]
-        cluster4 = cluster4[:, :2]
-        cluster4x = cluster4[:, 0]
-        cluster4y = cluster4[:, 1]
-
-        cluster5 = clustered[clustered[:, 2] == 5]
-        cluster5 = cluster5[:, :2]
-        cluster5x = cluster5[:, 0]
-        cluster5y = cluster5[:, 1]
-
-        cluster6 = clustered[clustered[:, 2] == 6]
-        cluster6 = cluster6[:, :2]
-        cluster6x = cluster6[:, 0]
-        cluster6y = cluster6[:, 1]
-
-        plt.plot(cluster0x, cluster0y, 'rx', cluster1x, cluster1y, 'gx', cluster2x, cluster2y, 'bx',
-                 cluster3x, cluster3y, 'yx', cluster4x, cluster4y, 'mx', cluster5x, cluster5y, 'rx',
-                 cluster6x, cluster6y, 'kx')
-        plt.show()
-
     em.plot_elbow_graphic(elbow_values_plot, k_clusters, 1)
+
+    ################################################################
+    # melhor k = 3
+    # verificando para qual cluster pertencem os dados de teste
+    ################################################################
+
+    dataTest = min_max_scaler.fit_transform(dataTest)
+
+    linhas = dataTest.shape[0]
+    colunaCluster = -1 * np.zeros((linhas, 1))
+    dataTest = np.hstack((dataTest, colunaCluster))
+
+    centroidesTeste = centroidesPorK[2]
+    clusteredTeste = clusteredPorK[2]
+    clusterNumbersTeste = clusteredNumbersPorK[2]
+
+    for ponto in dataTest:
+        # obtendo as distancias para os centroides do ponto atual
+        normsFromCentroides = np.linalg.norm(ponto[:2] - centroidesTeste, axis=1)
+        # computando o centroide mais próximo
+        nearestCentroideIndex = np.where(normsFromCentroides == np.amin(normsFromCentroides))[0][0]
+        # indicando no ponto o indice do centroide ao qual ele pertence
+        ponto[2] = nearestCentroideIndex
+
+    # np.append(clusteredTeste, dataTest[:, :2])
+
+    for ci in clusterNumbersTeste:
+        cor = np.random.random(3)
+
+        pontosCi = clusteredTeste[clusteredTeste[:, 2] == ci]
+        pontosCi = pontosCi[:, :2]
+        pontosCix = pontosCi[:, 0]
+        pontosCiy = pontosCi[:, 1]
+        plt.plot(pontosCix, pontosCiy, color=cor, marker='x', linestyle='')
+
+        ciTeste = dataTest[dataTest[:, 2] == ci]
+        ciTeste = ciTeste[:, :2]
+        ciTestex = ciTeste[:, 0]
+        ciTestey = ciTeste[:, 1]
+        plt.plot(ciTestex, ciTestey, color=cor, marker='s', linestyle='')
+    plt.show()
 
 
 if __name__ == '__main__':
-
-    # sys.setrecursionlimit(5500)
-
     data = np.genfromtxt('cluster.dat')
     training_set, test_set = stt.split_train_test(data, 0.1)
-    # executeKMeans(training_set)
-    executeDBSCAN(training_set)
+    # executeKMeans(training_set, test_set)
+    executeDBSCAN(training_set, test_set)
     # executeKMeans(test_set)
     # executeDBSCAN(test_set)

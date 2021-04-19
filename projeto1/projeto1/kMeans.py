@@ -10,9 +10,6 @@ def kMeans(data, k):
     # escolhendo randomicamente k posições no espaço para serem os centroides
     centroides = np.random.randint(low=0, high=1000, size=(k, 2)) / 1000
 
-    # valores das distancias minimas
-    newCentroides = np.zeros((k,2))
-
     while True:
 
         for ponto in data:

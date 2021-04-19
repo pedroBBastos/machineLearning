@@ -14,28 +14,20 @@ def DBSCAN(data, matrixDeDistancia, eps, minPts):
     data = np.hstack((data, cluster))
 
     clusterNumber = 0
-    count = 0
-
-    print(sys.getrecursionlimit())
-    sys.setrecursionlimit(2000)
-    print(sys.getrecursionlimit())
+    corePointsList = []
 
     for i in range(pontos):
         walkThroughPontosDaDensidade(i, matrixDeDistancia, data,
                                      eps, minPts, clusterNumber,
-                                     dimensoes, count)
+                                     dimensoes, corePointsList)
         clusterNumber += 1
 
-    return data
+    return data, corePointsList
 
 
 def walkThroughPontosDaDensidade(i, matrixDeDistancia,
                                  data, eps, minPts,
-                                 clusterNumber, dimensoes,
-                                 count):
-    count += 1
-    # if count == 900:
-    #     return
+                                 clusterNumber, dimensoes, corePointsList):
 
     if data[i][dimensoes] == 0:
         # ponto i visitado
@@ -45,9 +37,10 @@ def walkThroughPontosDaDensidade(i, matrixDeDistancia,
         distanciasPontoAtual = matrixDeDistancia[i]
         pontosWithinEps = np.where(distanciasPontoAtual <= eps)[0]
         if pontosWithinEps.shape[0] >= minPts:
+            corePointsList.append((i, clusterNumber))
             data[pontosWithinEps, dimensoes+1] = clusterNumber  # pontos dentro de eps pertencem ao cluster atual
 
             for p in pontosWithinEps:
-                walkThroughPontosDaDensidade(p, matrixDeDistancia,
-                                             data, eps, minPts,
-                                             clusterNumber, dimensoes, count)
+                walkThroughPontosDaDensidade(p, matrixDeDistancia, data,
+                                             eps, minPts, clusterNumber,
+                                             dimensoes, corePointsList)
