@@ -8,6 +8,8 @@ import sklearn.metrics as sklMetrics
 import elbow as em
 import scipy.spatial
 
+import sys
+
 
 def executeDBSCAN(dataTraining, dataTest, eps_values, minPts):
     pontosTreino, _ = dataTraining.shape
@@ -38,45 +40,52 @@ def executeDBSCAN(dataTraining, dataTest, eps_values, minPts):
         if np.unique(clustered[:, 3]).shape[0] != 1:
             silhouette_score = sklMetrics.silhouette_score(dataTraining, clustered[:, 3])
 
-        # for ci in clusterNumbers:
-        #     ci = clustered[clustered[:, 3] == ci]
-        #     ci = ci[:, :2]
-        #     cix = ci[:, 0]
-        #     ciy = ci[:, 1]
-        #     plt.plot(cix, ciy, color=np.random.random(3), marker='x', linestyle='')
-        # plt.show()
+        for ci in clusterNumbers:
+            ci = clustered[clustered[:, 3] == ci]
+            ci = ci[:, :2]
+            cix = ci[:, 0]
+            ciy = ci[:, 1]
+            plt.plot(cix, ciy, color=np.random.random(3), marker='x', linestyle='')
+        plt.title("EPS = {}".format(eps))
+        plt.show()
 
     ###########################################################
-    # Test -> melhor EPS = 0.0864
+    # Test
     ###########################################################
 
-    # clusteredPorEps = []
-    # corePointsPorEps = []
-    # clusterNumbersPorEps = []
-
+    melhorEPS = 10  # 29 para cluster.dat, 14 para o trip advisor
     dataTest = min_max_scaler.fit_transform(dataTest)
     pontosTeste, _ = dataTest.shape
 
-    chosenClustered = clusteredPorEps[0]
+    # selecionando as coordenadas dos core points
+    chosenClustered = clusteredPorEps[melhorEPS]
     chosenClustered = np.delete(chosenClustered, 2, 1)
+    corePoints = np.delete(corePointsPorEps[melhorEPS], 1, 1)
+    corePoints = np.reshape(corePoints, (1, corePoints.shape[0]))
+    qtdCorePoints = len(corePoints[0])
+    chosenClustered = chosenClustered[corePoints[0]]
+
+    # init cluster pontos teste
     initCluster = -1 * np.ones((pontosTeste, 1))  # -1 (no cluster)
     dataTest = np.hstack((dataTest, initCluster))
 
+    # definindo matriz de distância dos pontos de teste para os core points definidos no treinamento
     newMatrix = np.concatenate((chosenClustered[:, :2], dataTest[:, :2]))
     novaMatrixDeDistancia = scipy.spatial.distance.squareform(scipy.spatial.distance.pdist(newMatrix))
-    novaMatrixDeDistancia = novaMatrixDeDistancia[pontosTreino:, :pontosTreino]
+    novaMatrixDeDistancia = novaMatrixDeDistancia[qtdCorePoints:, :qtdCorePoints]
     print(novaMatrixDeDistancia)
 
+    # criando mascara para poder selecionar os corepoints mais próximos aos pontos de teste
     indicesPontosMaisProximos = np.argmin(novaMatrixDeDistancia, axis=1)
-    mask = np.zeros((pontosTeste, pontosTreino), dtype=bool)
+    mask = np.zeros((pontosTeste, qtdCorePoints), dtype=bool)
     mask[np.arange(len(mask)), indicesPontosMaisProximos] = True
     menoresDistancias = novaMatrixDeDistancia[mask]
 
-    # atribuindo número de cluster aos novos pontos
-    toAssignCluster = np.where(menoresDistancias <= eps_values[0])[0]
+    # atribuindo número de cluster do corepoint mais próximo aos novos pontos
+    toAssignCluster = np.where(menoresDistancias <= eps_values[melhorEPS])[0]
     dataTest[toAssignCluster, 2] = chosenClustered[indicesPontosMaisProximos[toAssignCluster], 2]
 
-    clusterNumbersTeste = clusterNumbersPorEps[6]
+    clusterNumbersTeste = clusterNumbersPorEps[melhorEPS]
     for ci in clusterNumbersTeste:
         cor = np.random.random(3)
 
@@ -91,6 +100,7 @@ def executeDBSCAN(dataTraining, dataTest, eps_values, minPts):
         ciTestex = ciTeste[:, 0]
         ciTestey = ciTeste[:, 1]
         plt.plot(ciTestex, ciTestey, color=cor, marker='s', linestyle='')
+    plt.title("Melhor EPS = {}".format(eps_values[melhorEPS]))
     plt.show()
 
 

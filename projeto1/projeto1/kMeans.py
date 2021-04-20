@@ -39,7 +39,7 @@ def executeKMeans(dataTraining, dataTest):
     em.plot_elbow_graphic(elbow_values_plot, k_clusters, 1)
 
     ################################################################
-    # melhor k = 3
+    # melhor k = 4
     # verificando para qual cluster pertencem os dados de teste
     ################################################################
 
@@ -49,9 +49,9 @@ def executeKMeans(dataTraining, dataTest):
     colunaCluster = -1 * np.zeros((linhas, 1))
     dataTest = np.hstack((dataTest, colunaCluster))
 
-    centroidesTeste = centroidesPorK[2]
-    clusteredTeste = clusteredPorK[2]
-    clusterNumbersTeste = clusteredNumbersPorK[2]
+    centroidesTeste = centroidesPorK[3]
+    clusteredTeste = clusteredPorK[3]
+    clusterNumbersTeste = clusteredNumbersPorK[3]
 
     for ponto in dataTest:
         # obtendo as distancias para os centroides do ponto atual
