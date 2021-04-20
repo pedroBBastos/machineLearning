@@ -53,14 +53,14 @@ def executeDBSCAN(dataTraining, dataTest, eps_values, minPts):
     # Test
     ###########################################################
 
-    melhorEPS = 29  # 29 para cluster.dat, 14 para o trip advisor
+    indiceMelhorEPS = 29  # 29 para cluster.dat, 14 para o trip advisor
     dataTest = min_max_scaler.fit_transform(dataTest)
     pontosTeste, _ = dataTest.shape
 
     # selecionando as coordenadas dos core points
-    chosenClustered = clusteredPorEps[melhorEPS]
+    chosenClustered = clusteredPorEps[indiceMelhorEPS]
     chosenClustered = np.delete(chosenClustered, 2, 1)
-    corePoints = np.delete(corePointsPorEps[melhorEPS], 1, 1)
+    corePoints = np.delete(corePointsPorEps[indiceMelhorEPS], 1, 1)
     corePoints = np.reshape(corePoints, (1, corePoints.shape[0]))
     qtdCorePoints = len(corePoints[0])
     chosenClustered = chosenClustered[corePoints[0]]
@@ -82,10 +82,10 @@ def executeDBSCAN(dataTraining, dataTest, eps_values, minPts):
     menoresDistancias = novaMatrixDeDistancia[mask]
 
     # atribuindo número de cluster do corepoint mais próximo aos novos pontos
-    toAssignCluster = np.where(menoresDistancias <= eps_values[melhorEPS])[0]
+    toAssignCluster = np.where(menoresDistancias <= eps_values[indiceMelhorEPS])[0]
     dataTest[toAssignCluster, 2] = chosenClustered[indicesPontosMaisProximos[toAssignCluster], 2]
 
-    clusterNumbersTeste = clusterNumbersPorEps[melhorEPS]
+    clusterNumbersTeste = clusterNumbersPorEps[indiceMelhorEPS]
     for ci in clusterNumbersTeste:
         cor = np.random.random(3)
 
@@ -100,7 +100,7 @@ def executeDBSCAN(dataTraining, dataTest, eps_values, minPts):
         ciTestex = ciTeste[:, 0]
         ciTestey = ciTeste[:, 1]
         plt.plot(ciTestex, ciTestey, color=cor, marker='s', linestyle='')
-    plt.title("Melhor EPS = {}".format(eps_values[melhorEPS]))
+    plt.title("Melhor EPS = {}".format(eps_values[indiceMelhorEPS]))
     plt.show()
 
 
