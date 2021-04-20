@@ -53,7 +53,7 @@ def executeDBSCAN(dataTraining, dataTest, eps_values, minPts):
     # Test
     ###########################################################
 
-    melhorEPS = 10  # 29 para cluster.dat, 14 para o trip advisor
+    melhorEPS = 29  # 29 para cluster.dat, 14 para o trip advisor
     dataTest = min_max_scaler.fit_transform(dataTest)
     pontosTeste, _ = dataTest.shape
 
