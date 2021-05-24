@@ -1,0 +1,31 @@
+quais são minhas features??
+    -> coordenadas x, y, z de cada ponto da trajetória
+
+quantos dados eu tenho?
+    -> 20 pontos de trajetória, para cada trajetória dada
+
+------------------------------
+
+1: Given some cost function 𝐽 𝜃#, 𝜃!,…, 𝜃$ :
+2: Algorithm parameter: learning rate α ∈ (0, 1]
+3: Initialize 𝜃#, 𝜃!,…, 𝜃$ arbitrarily
+4: repeat (for each epoch)
+5: Change 𝜃#, 𝜃!,…, 𝜃$ to reduce 𝐽 𝜃#, 𝜃!,…, 𝜃$
+
+-----------------------------
+
+Your data is captured with a rate of 60 frames/second,
+and you have waited 1/3 of a second to make a decision;
+
+    -> ou seja, os 20 dados dos datasets representam esse meu 1/3 de segundo para eu poder agir
+        -> representam 20 frames capturados
+    -> terei que agir nos "outros" 40 frames
+
+-----------------------------
+
+-> definir regressão linear e uma regressão polinomial
+    -> montar a equação linear de acordo com a qtd de features (teremos n + 1 tethas)
+    -> Ex: tetha0 + tethe1*x + tetha2*y + tetha3*z
+
+-> na verdade, a equação ficará (para eu conseguir desenhar uma reta...):
+    z = tetha0 + tethe1*x + tetha2*y
