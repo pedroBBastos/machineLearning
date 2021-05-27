@@ -24,8 +24,8 @@ and you have waited 1/3 of a second to make a decision;
 -----------------------------
 
 -> definir regressão linear e uma regressão polinomial
-    -> montar a equação linear de acordo com a qtd de features (teremos n + 1 tethas)
-    -> Ex: tetha0 + tethe1*x + tetha2*y + tetha3*z
+    -> montar a equação linear de acordo com a qtd de features (teremos n + 1 thetas)
+    -> Ex: theta0 + tethe1*x + theta2*y + theta3*z
 
 -> na verdade, a equação ficará (para eu conseguir desenhar uma reta...):
-    z = tetha0 + tethe1*x + tetha2*y
+    z = theta0 + tethe1*x + theta2*y
