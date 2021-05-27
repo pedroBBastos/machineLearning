@@ -53,6 +53,6 @@ class LinearRegression(BaseGradientDescent):
 class PolinomialRegression(BaseGradientDescent):
     def calculateHypothesisForPoint(self, thetas, entry):
         hyphotesis = thetas[0]
-        for i in range(entry.size):
-            hyphotesis += thetas[i + 1] * math.pow(entry[i], i + 1)  # ^1, ^2, ^3...
+        for i in range(thetas.size-1):
+            hyphotesis += thetas[i + 1] * math.pow(entry, i + 1)  # ^1, ^2, ^3...
         return hyphotesis
